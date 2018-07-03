@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import xyz.sun.entity.Customer;
-import xyz.sun.repository.CustomerRepository;
+import xyz.sun.repository.CustomerCrudRepository;
 
 @SpringBootApplication
 public class Application {
@@ -18,7 +18,7 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner demo(CustomerRepository repository) {
+    public CommandLineRunner demo(CustomerCrudRepository repository) {
         return (args -> {
             // save a couple of customers
             repository.save(new Customer("Jack", "Bauer"));
