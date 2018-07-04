@@ -1,5 +1,6 @@
 package xyz.sun.repository;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,6 @@ public class CustomerCrudRepositoryTest {
     public void findByLastName() {
         Customer customer = new Customer("first", "last");
         List<Customer> findByLastName = repository.findByLastName("Bauer");
+        Assert.assertEquals(16, findByLastName.size());
     }
 }
