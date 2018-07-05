@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.sun.bean.ConfigurationBean;
 import xyz.sun.entity.Customer;
 import xyz.sun.repository.CustomerCrudRepository;
 
@@ -20,9 +21,17 @@ public class Hello {
     @Autowired
     CustomerCrudRepository repository;
 
+    @Autowired
+    ConfigurationBean bean;
+
     @RequestMapping("/get/{lastName}")
     public List<Customer> findLastName(@PathVariable String lastName) {
         List<Customer> customer = repository.findByLastName(lastName);
         return customer;
+    }
+
+    @RequestMapping("/bean")
+    public String getBean() {
+        return bean.toString();
     }
 }

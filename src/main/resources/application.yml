@@ -17,3 +17,9 @@ spring:
   #JPA
   jpa:
     show-sql: true
+
+xyz:
+  sun:
+    name: sun
+    age: 25
+    location: 深圳
