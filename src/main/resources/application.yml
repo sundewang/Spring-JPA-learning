@@ -22,4 +22,4 @@ xyz:
   sun:
     name: sun
     age: 25
-    location: 深圳
+    location: ${xyz.sun.name}是${xyz.sun.age}岁，在深圳

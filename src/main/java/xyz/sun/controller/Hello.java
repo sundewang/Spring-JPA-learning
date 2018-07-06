@@ -1,5 +1,15 @@
 package xyz.sun.controller;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.ConfigurationBuilderEvent;
+import org.apache.commons.configuration2.builder.ReloadingFileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.event.Event;
+import org.apache.commons.configuration2.event.EventListener;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.reloading.PeriodicReloadingTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +18,9 @@ import xyz.sun.bean.ConfigurationBean;
 import xyz.sun.entity.Customer;
 import xyz.sun.repository.CustomerCrudRepository;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
  *
@@ -23,6 +35,27 @@ public class Hello {
 
     @Autowired
     ConfigurationBean bean;
+    static ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> builder;
+
+    static {
+        Parameters parameters = new Parameters();
+        // 不要使用resources下面的文件，它会被打包到jar中，无法修改
+        File file = new File("conf/test.properties");
+        System.out.println(file.getAbsolutePath());
+        builder = new ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(parameters.fileBased()
+                                .setFile(file));
+        PeriodicReloadingTrigger trigger = new PeriodicReloadingTrigger(builder.getReloadingController(),
+                null, 1, TimeUnit.SECONDS);
+        trigger.start();
+        builder.addEventListener(ConfigurationBuilderEvent.CONFIGURATION_REQUEST,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        System.out.println(builder.getReloadingController().checkForReloading(null));
+                    }
+                });
+    }
 
     @RequestMapping("/get/{lastName}")
     public List<Customer> findLastName(@PathVariable String lastName) {
@@ -33,5 +66,17 @@ public class Hello {
     @RequestMapping("/bean")
     public String getBean() {
         return bean.toString();
+    }
+
+    @RequestMapping("/config")
+    public String getConfig() {
+        String s = "";
+        try {
+            Configuration config = builder.getConfiguration();
+            s = config.getProperty("database.url").toString();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }
