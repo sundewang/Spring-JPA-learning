@@ -43,6 +43,7 @@ public class ConfigurationBean {
 
     @Override
     public String toString() {
+        System.out.println("length:"+name.length());
         return "ConfigurationBean{" +
                 "name='" + name + '\'' +
                 ", age=" + age +

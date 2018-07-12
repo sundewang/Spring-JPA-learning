@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CustomerCrudRepository extends CrudRepository<Customer, Long> {
     List<Customer> findByLastName(String lastName);
+
 }

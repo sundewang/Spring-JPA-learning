@@ -19,6 +19,7 @@ import xyz.sun.entity.Customer;
 import xyz.sun.repository.CustomerCrudRepository;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -78,5 +79,26 @@ public class Hello {
             e.printStackTrace();
         }
         return s;
+    }
+
+    @RequestMapping("/saveAll")
+    public String saveAll() {
+        String message = "";
+        List<Customer> customers = generate();
+        long start = System.currentTimeMillis();
+        repository.saveAll(customers);
+        long end = System.currentTimeMillis();
+        message = String.valueOf(end-start);
+        return message;
+    }
+
+    private List<Customer> generate() {
+        List<Customer> customers = new ArrayList<>();
+        Customer customer;
+        for (int i = 10000; i < 100000; i++) {
+            customer = new Customer("shen" + i, "cninfo" + i);
+            customers.add(customer);
+        }
+        return customers;
     }
 }
